@@ -2,7 +2,7 @@ DataAugmentation ver1.0
 2014/10/14 takuya minagawa
 
 1. Introduction
-This program transform input images with rotation, slide, blur, noise to create training data of image recognition.
+This program transform input images with rotation, slide, blur, and noise to create training data of image recognition.
 This tool generate random parameters for these transformations.
 This image transform proceed in the following order:
 - change aspect ratio
@@ -10,8 +10,8 @@ This image transform proceed in the following order:
 - rotation around Z axis (yaw angle)
 - rotation around Y axis (pitch angle)
 - rotation around X axis (roll angle)
-- gause noise
-- gause blur
+- Gauss noise
+- Gauss blur
 
 The coordinate system is that X axis is horizontal, Y axis is vertical, and Z axis = optical axis of camera in an image.
 
