@@ -50,6 +50,8 @@ For instance, there are two objects in image file "20100915-1/0000004.jpg" and t
 20100915-1/0000004.jpg 2 10 14 100 120 141 151 100 120
 ========================================
 
+"Change aspect ratio" and "slide" work only in case that <input> is an annotation file and a target object has enough margin around its label.
+
 
 <output folder>
 Generated image files are stored in this folder.
