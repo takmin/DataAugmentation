@@ -37,6 +37,53 @@
 #include <boost/filesystem/path.hpp>
 
 namespace util{
+	
+	//! はみ出る領域をカット
+	cv::Rect TruncateRect(const cv::Rect& obj_rect, const cv::Size& img_size)
+	{
+		cv::Rect resize_rect = obj_rect;
+		if (obj_rect.x < 0){
+			resize_rect.x = 0;
+			resize_rect.width += obj_rect.x;
+		}
+		if (obj_rect.y < 0){
+			resize_rect.y = 0;
+			resize_rect.height += obj_rect.y;
+		}
+		if (resize_rect.x + resize_rect.width > img_size.width){
+			resize_rect.width = img_size.width - resize_rect.x;
+		}
+		if (resize_rect.y + resize_rect.height > img_size.height){
+			resize_rect.height = img_size.height - resize_rect.y;
+		}
+
+		return resize_rect;
+	}
+
+
+	//! 中心を動かさずに、はみ出る領域をカット
+	cv::Rect TruncateRectKeepCenter(const cv::Rect& obj_rect, const cv::Size& max_size)
+	{
+		cv::Rect exp_rect = obj_rect;
+		if (exp_rect.x < 0){
+			exp_rect.width += 2 * exp_rect.x;
+			exp_rect.x = 0;
+		}
+		if (exp_rect.y < 0){
+			exp_rect.height += 2 * exp_rect.y;
+			exp_rect.y = 0;
+		}
+		if (exp_rect.x + exp_rect.width > max_size.width){
+			exp_rect.x += (exp_rect.x + exp_rect.width - max_size.width) / 2;
+			exp_rect.width = max_size.width - exp_rect.x;
+		}
+		if (exp_rect.y + exp_rect.height > max_size.height){
+			exp_rect.y += (exp_rect.y + exp_rect.height - max_size.height) / 2;
+			exp_rect.height = max_size.height - exp_rect.y;
+		}
+		return exp_rect;
+	}
+
 
 	//! アノテーションファイルの読み込み
 	/*!

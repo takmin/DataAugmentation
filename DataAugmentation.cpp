@@ -65,11 +65,13 @@ cv::Mat ImageTransform(const cv::Mat& img, const cv::Rect& area,
 	double blur_max_sigma, double noise_max_sigma, double x_slide_sigma, double y_slide_sigma,
 	double aspect_range, cv::RNG& rng)
 {
-	assert(img.type() == CV_8U);
+	assert(img.type() == CV_8UC1 || img.type() == CV_8UC3);
 
 	// Deform Rect Randomly
 	cv::Rect rect = (area.width <= 0 || area.height <= 0) ? cv::Rect(0, 0, img.cols, img.rows) :
 		RandomDeformRect(area, x_slide_sigma, y_slide_sigma, aspect_range, rng);
+
+	rect = util::TruncateRect(rect, img.size());
 
 	// Random Rotation
 	cv::Mat dst;
