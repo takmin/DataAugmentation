@@ -206,7 +206,7 @@ cv::Rect ExpandRectForRotate(const cv::Rect& area)
 {
 	cv::Rect exp_rect;
 	
-	int w = (double)(area.width + area.height) / std::sqrt(2.0) + 0.5;
+	int w = cvRound(std::sqrt((double)(area.width * area.width + area.height * area.height)));
 	
 	exp_rect.width = w;
 	exp_rect.height = w;
