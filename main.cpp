@@ -101,7 +101,7 @@ bool ParseCommandLine(int argc, char * argv[], std::string& conf_file,
 bool LoadConf(const std::string& conf_file, int& num_generate, 
 	double& yaw_sigma, double& pitch_sigma, double& roll_sigma,
 	double& blur_max_sigma, double& noise_max_sigma,
-	double& x_slide_sigma, double& y_slide_sigma, double& aspect_sigma)
+	double& x_slide_sigma, double& y_slide_sigma, double& aspect_sigma, std::string &img_format)
 {
 	// set argments of command options
 	options_description opt("option");
@@ -114,7 +114,8 @@ bool LoadConf(const std::string& conf_file, int& num_generate,
 		("noise_max_sigma", value<double>()->default_value(0), "maximum value of sigma for gaussian noise (pixel value)")
 		("x_slide_sigma", value<double>()->default_value(0), "sigma of slide in x direction (ratio of width)")
 		("y_slide_sigma", value<double>()->default_value(0), "sigma of slide in y direction (ratio of height)")
-		("aspect_ratio_sigma", value<double>()->default_value(0), "sigma of aspect ratio deformation");
+		("aspect_ratio_sigma", value<double>()->default_value(0), "sigma of aspect ratio deformation")
+		("img_fromat", value<std::string>()->default_value(0), "image format");
 
 	variables_map argmap;
 	try{
@@ -137,6 +138,7 @@ bool LoadConf(const std::string& conf_file, int& num_generate,
 		x_slide_sigma = argmap["x_slide_sigma"].as<double>(); 
 		y_slide_sigma = argmap["y_slide_sigma"].as<double>();
 		aspect_sigma = argmap["aspect_ratio_sigma"].as<double>();
+		img_format = argmap["img_format"].as<std::string>();
 
 		if (num_generate < 0 || yaw_sigma < 0 || pitch_sigma < 0 || roll_sigma < 0 ||
 			blur_max_sigma < 0 || noise_max_sigma < 0 ||
@@ -181,16 +183,19 @@ int main(int argc, char * argv[])
 
 	int num_generate;
 	double yaw_range, pitch_range, roll_range, x_slide, y_slide, blur_sigma, noise_sigma, aspect_range;
+	std::string img_format;
 	if (!LoadConf(conf_file, num_generate, yaw_range, pitch_range, roll_range,
-		blur_sigma, noise_sigma, x_slide, y_slide, aspect_range))
+		blur_sigma, noise_sigma, x_slide, y_slide, aspect_range, img_format))
 		return -1;
 
 	std::vector<std::string> img_files;
 	std::vector<std::vector<cv::Rect>> obj_positions;
 	GetImageFileNames(input_name, img_files, obj_positions);
 
+	if (img_format.empty())
+		img_format = "png";
 	DataAugmentation(img_files, obj_positions, output_folder, output_anno_file, num_generate, yaw_range, pitch_range, roll_range,
-		blur_sigma, noise_sigma, x_slide, y_slide, aspect_range);
+		blur_sigma, noise_sigma, x_slide, y_slide, aspect_range, img_format);
 
 	return 0;
 }
