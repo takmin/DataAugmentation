@@ -96,6 +96,8 @@ Maximum standard deviation of Gaussian blur.  Standard deviation of Gauss blur i
 <noise_max_sigma>
 Maximum standard deviation of Gaussian noise.  Standard deviation of Gaussian noise is generated randomly between zero and this value. (pixel value)
 
+<img_format>
+Save images as different formats. (jpg, png ...)
 
 5. License
 This software is released under "MIT License".
