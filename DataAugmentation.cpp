@@ -112,11 +112,14 @@ cv::Mat ImageTransform(const cv::Mat& img, const cv::Rect& area,
 void DataAugmentation(const std::vector<std::string>& img_files, const std::vector<std::vector<cv::Rect>>& areas,
 	const std::string& output_folder, const std::string& output_file,
 	int num_generate, double yaw_range, double pitch_range, double roll_range,
-	double blur_sigma, double noise_sigma, double x_slide, double y_slide, double aspect_range)
+	double blur_sigma, double noise_sigma, double x_slide, double y_slide, double aspect_range, std::string img_format)
 {
 	assert(areas.empty() || areas.size() == img_files.size());
 
 	using namespace boost::filesystem;
+
+	if (img_format == "")
+		img_format = "png";
 
 	cv::RNG rng;
 	int num_img = img_files.size();
@@ -137,12 +140,13 @@ void DataAugmentation(const std::vector<std::string>& img_files, const std::vect
 
 		for (int j = 0; j < trans_areas.size(); j++){
 			std::stringstream filestr;
-			filestr << "img" << i << "_" << j;
+			std::string stem = boost::filesystem::path(img_files[i]).stem().string();
+			filestr << stem << "_" << j;
 			
 			for (int k = 0; k < num_generate; k++){
 				cv::Mat tran_img = ImageTransform(img, trans_areas[j], yaw_range, pitch_range, roll_range, blur_sigma, noise_sigma, x_slide, y_slide, aspect_range, rng);
 				std::stringstream filestr2;
-				filestr2 << filestr.str() << "_" << k << ".png";
+				filestr2 << filestr.str() << "_" << k << "." << img_format;
 				path dst_file = path(output_folder) / path(filestr2.str());
 				std::string save_img_name = dst_file.string();
 
