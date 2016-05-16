@@ -115,7 +115,7 @@ bool LoadConf(const std::string& conf_file, int& num_generate,
 		("x_slide_sigma", value<double>()->default_value(0), "sigma of slide in x direction (ratio of width)")
 		("y_slide_sigma", value<double>()->default_value(0), "sigma of slide in y direction (ratio of height)")
 		("aspect_ratio_sigma", value<double>()->default_value(0), "sigma of aspect ratio deformation")
-		("img_fromat", value<std::string>()->default_value(0), "image format");
+		("img_format", value<std::string>()->default_value(""), "image format");
 
 	variables_map argmap;
 	try{
