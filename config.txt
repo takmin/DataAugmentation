@@ -1,9 +1,0 @@
-generate_num = 5
-yaw_sigma = 0
-pitch_sigma = 0
-roll_sigma = 0
-blur_max_sigma = 0
-noise_max_sigma = 50.0 
-x_slide_sigma = 0.0
-y_slide_sigma = 0.0
-aspect_ratio_sigma = 0

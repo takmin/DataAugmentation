@@ -63,7 +63,7 @@ cv::Rect RandomDeformRect(const cv::Rect& input_rect, double x_slide_sigma, doub
 cv::Mat ImageTransform(const cv::Mat& img, const cv::Rect& area,
 	double yaw_sigma, double pitch_sigma, double roll_sigma,
 	double blur_max_sigma, double noise_max_sigma, double x_slide_sigma, double y_slide_sigma,
-	double aspect_range, cv::RNG& rng)
+	double aspect_range, double hflip_ratio, double vflip_ratio, cv::RNG& rng)
 {
 	assert(img.type() == CV_8UC1 || img.type() == CV_8UC3);
 
@@ -105,14 +105,34 @@ cv::Mat ImageTransform(const cv::Mat& img, const cv::Rect& area,
 		dst2 = dst;
 	}
 
-	return dst2;
+	// Rondom Flip (horizontal)
+	cv::Mat dst3;
+	double flip_prob = rng.uniform(0.0, 1.0);
+	if (hflip_ratio > flip_prob) {
+		cv::flip(dst2, dst3, 1);
+	}
+	else {
+		dst3 = dst2;
+	}
+
+	// Rondom Flip (vertical)
+	cv::Mat dst4;
+	flip_prob = rng.uniform(0.0, 1.0);
+	if (vflip_ratio > flip_prob) {
+		cv::flip(dst3, dst4, 0);
+	}
+	else {
+		dst4 = dst3;
+	}
+	return dst4;
 }
 
 
 void DataAugmentation(const std::vector<std::string>& img_files, const std::vector<std::vector<cv::Rect>>& areas,
 	const std::string& output_folder, const std::string& output_file,
 	int num_generate, double yaw_range, double pitch_range, double roll_range,
-	double blur_sigma, double noise_sigma, double x_slide, double y_slide, double aspect_range)
+	double blur_sigma, double noise_sigma, double x_slide, double y_slide, double aspect_range,
+	double hflip_ratio, double vflip_ratio)
 {
 	assert(areas.empty() || areas.size() == img_files.size());
 
@@ -140,7 +160,8 @@ void DataAugmentation(const std::vector<std::string>& img_files, const std::vect
 			filestr << "img" << i << "_" << j;
 			
 			for (int k = 0; k < num_generate; k++){
-				cv::Mat tran_img = ImageTransform(img, trans_areas[j], yaw_range, pitch_range, roll_range, blur_sigma, noise_sigma, x_slide, y_slide, aspect_range, rng);
+				cv::Mat tran_img = ImageTransform(img, trans_areas[j], yaw_range, pitch_range, roll_range,
+					blur_sigma, noise_sigma, x_slide, y_slide, aspect_range, hflip_ratio, vflip_ratio, rng);
 				std::stringstream filestr2;
 				filestr2 << filestr.str() << "_" << k << ".png";
 				path dst_file = path(output_folder) / path(filestr2.str());
