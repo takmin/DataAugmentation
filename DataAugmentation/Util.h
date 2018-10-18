@@ -38,6 +38,12 @@
 
 namespace util{
 
+	//! 画像からはみ出る矩形の整形
+	cv::Rect TruncateRect(const cv::Rect& obj_rect, const cv::Size& img_size);
+
+	//! 画像からはみ出る矩形を中心を維持しながら整形
+	cv::Rect TruncateRectKeepCenter(const cv::Rect& obj_rect, const cv::Size& max_size);
+
 	//! アノテーションファイルの読み込み
 	/*!
 	opencv_createsamles.exeと同形式のアノテーションファイル読み書き

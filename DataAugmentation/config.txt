@@ -7,3 +7,5 @@ noise_max_sigma = 50.0
 x_slide_sigma = 0.0
 y_slide_sigma = 0.0
 aspect_ratio_sigma = 0
+horizontal_flip = 0
+vertical_flip = 0

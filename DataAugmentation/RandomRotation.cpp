@@ -32,6 +32,7 @@
 //M*/
 
 #include "RandomRotation.h"
+#include "Util.h"
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
@@ -201,33 +202,17 @@ void RotateImage(const cv::Mat& src, cv::Mat& dst, float yaw, float pitch, float
 
 
 // Keep center and expand rectangle for rotation
-cv::Rect ExpandRectForRotate(const cv::Size& max_size, const cv::Rect& area)
+cv::Rect ExpandRectForRotate(const cv::Rect& area)
 {
 	cv::Rect exp_rect;
 	
-	int w = (double)(area.width + area.height) / std::sqrt(2.0) + 0.5;
+	int w = cvRound(std::sqrt((double)(area.width * area.width + area.height * area.height)));
 	
 	exp_rect.width = w;
 	exp_rect.height = w;
 	exp_rect.x = area.x - (exp_rect.width - area.width) / 2;
 	exp_rect.y = area.y - (exp_rect.height - area.height) / 2;
 
-	if (exp_rect.x < 0){
-		exp_rect.width += exp_rect.x;
-		exp_rect.x = 0;
-	}
-	if (exp_rect.y < 0){
-		exp_rect.height += exp_rect.y;
-		exp_rect.y = 0;
-	}
-	if (exp_rect.x + exp_rect.width > max_size.width){
-		exp_rect.width = 2 * (max_size.width - exp_rect.x) - exp_rect.width;
-		exp_rect.x = max_size.width - exp_rect.width;
-	}
-	if (exp_rect.y + exp_rect.height > max_size.height){
-		exp_rect.height = 2 * (max_size.height - exp_rect.y) - exp_rect.height;
-		exp_rect.y = max_size.height - exp_rect.height;
-	}
 	return exp_rect;
 }
 
@@ -243,19 +228,14 @@ void RandomRotateImage(const cv::Mat& src, cv::Mat& dst, float yaw_sigma, float 
 	//double roll = rng.uniform(-roll_range / 2, roll_range / 2);
 
 	cv::Rect rect = (area.width <= 0 || area.height <= 0) ? cv::Rect(0, 0, src.cols, src.rows) : 
-		ExpandRectForRotate(src.size(), area);
+		ExpandRectForRotate(area);
+	rect = util::TruncateRectKeepCenter(rect, src.size());
+
 	cv::Mat rot_img;
-	RotateImage(src(rect), rot_img, yaw, pitch, roll, Z, interpolation, boarder_mode, boarder_color);
+	RotateImage(src(rect).clone(), rot_img, yaw, pitch, roll, Z, interpolation, boarder_mode, boarder_color);
 
 	cv::Rect dst_area((rot_img.cols - area.width) / 2, (rot_img.rows - area.height) / 2, area.width, area.height);
-	if (dst_area.x < 0){
-		dst_area.width += dst_area.x;
-		dst_area.x = 0;
-	}
-	if (dst_area.y < 0){
-		dst_area.height += dst_area.y;
-		dst_area.y = 0;
-	}
+	dst_area = util::TruncateRectKeepCenter(dst_area, rot_img.size());
 	dst = rot_img(dst_area).clone();
 }
 

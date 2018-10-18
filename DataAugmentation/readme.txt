@@ -1,5 +1,5 @@
 DataAugmentation ver1.0
-2014/10/14 takuya minagawa
+2018/10/18 takuya minagawa
 
 1. Introduction
 This program transform input images with rotation, slide, blur, and noise to create training data of image recognition.
@@ -12,6 +12,8 @@ This image transform proceed in the following order:
 - rotation around X axis (roll angle)
 - Gauss noise
 - Gauss blur
+- Image flip (horizontal)
+- Image flip (vertical)
 
 The coordinate system is that X axis is horizontal, Y axis is vertical, and Z axis = optical axis of camera in an image.
 
@@ -26,9 +28,9 @@ OpenCV
 http://opencv.org/
 
 You can use pre-compiled version of windows. Extract DataAugmentation.zip and start "exe" file.
-If it does not work, you may need to install VC++2013 runtime.
+If it does not work, you may need to install VC++2017 runtime.
 You can download it at:
-http://www.microsoft.com/en-us/download/details.aspx?id=40784
+https://go.microsoft.com/fwlink/?LinkId=746572
 
 
 3. How to use
@@ -49,6 +51,8 @@ For instance, there are two objects in image file "20100915-1/0000004.jpg" and t
 ========================================
 20100915-1/0000004.jpg 2 10 14 100 120 141 151 100 120
 ========================================
+
+"Change aspect ratio" and "slide" work only in case that <input> is an annotation file and a target object has enough margin around its label.
 
 
 <output folder>
@@ -93,6 +97,12 @@ Maximum standard deviation of Gaussian blur.  Standard deviation of Gauss blur i
 
 <noise_max_sigma>
 Maximum standard deviation of Gaussian noise.  Standard deviation of Gaussian noise is generated randomly between zero and this value. (pixel value)
+
+<horizontal_flip>
+Flip image from left to right, which happens at the probability indicated here [0-1]
+
+<vertical_flip>
+Flip image from up to down, which happens at the probability indicated here [0-1]
 
 
 5. License
