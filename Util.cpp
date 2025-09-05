@@ -33,8 +33,7 @@
 
 #include "Util.h"
 #include <fstream>
-#include <boost/filesystem/operations.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 
 namespace util{
 	
@@ -161,7 +160,7 @@ namespace util{
 	// ディレクトリから画像ファイル名一覧を取得
 	bool ReadImageFilesInDirectory(const std::string& img_dir, std::vector<std::string>& image_lists)
 	{
-		using namespace boost::filesystem;
+		using namespace std::filesystem;
 
 		path img_dir_path(img_dir);
 		if (!is_directory(img_dir_path)){
@@ -179,7 +178,7 @@ namespace util{
 	}
 
 	bool hasImageExtention(const std::string& filename){
-		std::string ext = boost::filesystem::path(filename).extension().string();
+		std::string ext = std::filesystem::path(filename).extension().string();
 
 		return (ext == ".jpg" || ext == ".JPG" || ext == ".jpeg" || ext == ".JPEG" ||
 			ext == ".bmp" || ext == ".BMP" || ext == ".png" || ext == ".PNG" ||

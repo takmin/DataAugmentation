@@ -33,7 +33,7 @@
 
 #include "DataAugmentation.h"
 #include <opencv2/highgui/highgui.hpp>
-#include <boost/filesystem/path.hpp>
+#include <filesystem>
 #include <iostream>
 #include "RandomRotation.h"
 #include "Util.h"
@@ -136,7 +136,7 @@ void DataAugmentation(const std::vector<std::string>& img_files, const std::vect
 {
 	assert(areas.empty() || areas.size() == img_files.size());
 
-	using namespace boost::filesystem;
+	using namespace std::filesystem;
 
 	cv::RNG rng;
 	int num_img = img_files.size();

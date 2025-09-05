@@ -40,136 +40,113 @@ DataAugmentation <annotation name> <output folder> -a <output annnotation> -c <c
 
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/objdetect/objdetect.hpp>
-#include <boost/program_options.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <opencv2/core/utility.hpp>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include "Util.h"
 #include "DataAugmentation.h"
 
-using namespace boost::program_options;
-
-void print_help(int argc, char * argv[], const options_description& opt)
+void print_help(const cv::CommandLineParser& parser)
 {
-	std::cout << argv[0] << " <input annotation> <output folder> [option]" << std::endl;
-	std::cout << opt << std::endl;
+	std::cout << "Usage: DataAugmentation <input annotation> <output folder> [-a=<output annotation>] [-c=<config file>] [--help]" << std::endl;
+	parser.printMessage();
 }
 
-
-bool ParseCommandLine(int argc, char * argv[], std::string& conf_file,
+bool ParseCommandLine(int argc, char* argv[], std::string& conf_file,
 	std::string& input_anno_file, std::string& output_folder, std::string& output_anno_file)
 {
-	// option argments
-	options_description opt("option");
-	opt.add_options()
-		("help,h", "Print help")
-		("conf,c", value<std::string>()->default_value("config.txt"), "configuration file")
-		("anno,a", value<std::string>()->default_value("annotation.txt"), "output annotation file");
+	const std::string keys =
+		"{help h |        | Print help }"
+		"{@input |        | Input annotation or directory }"
+		"{@output|        | Output folder }"
+		"{a      |annotation.txt| Output annotation file }"
+		"{c      |config.txt    | Configuration file }";
 
-	variables_map argmap;
-	try{
-		// get command line argments
-		store(parse_command_line(argc, argv, opt), argmap);
-		notify(argmap);
+	cv::CommandLineParser parser(argc, argv, keys);
 
-		// print help
-		if (argmap.count("help") || argc < 3){
-			print_help(argc, argv, opt);
-			return false;
-		}
-
-		input_anno_file = argv[1];
-		output_folder = argv[2];
-		if (input_anno_file.find("-") == 0 || output_folder.find("-") == 0){
-			print_help(argc, argv, opt);
-			return false;
-		}
-		conf_file = argmap["conf"].as<std::string>();
-		output_anno_file = argmap["anno"].as<std::string>();
-	}
-	catch (std::exception& e)
-	{
-		std::cout << std::endl << e.what() << std::endl;
-		print_help(argc, argv, opt);
+	if (parser.has("help") || argc < 2) {
+		print_help(parser);
 		return false;
 	}
 
+	input_anno_file = parser.get<std::string>(0);
+	output_folder = parser.get<std::string>(1);
+	conf_file = parser.get<std::string>("c");
+	output_anno_file = parser.get<std::string>("a");
+
+	if (!parser.check()) {
+		print_help(parser);
+		return false;
+	}
 	return true;
 }
 
 
-bool LoadConf(const std::string& conf_file, int& num_generate, 
+bool LoadConf(const std::string& conf_file, int& num_generate,
 	double& yaw_sigma, double& pitch_sigma, double& roll_sigma,
 	double& blur_max_sigma, double& noise_max_sigma,
 	double& x_slide_sigma, double& y_slide_sigma, double& aspect_sigma,
 	double& hflip_ratio, double& vflip_ratio)
 {
-	// set argments of command options
-	options_description opt("option");
-	opt.add_options()
-		("generate_num", value<int>(), "number to generate per an input image")
-		("yaw_sigma", value<double>()->default_value(0), "sigma of yaw rotation angle (degree)")
-		("pitch_sigma", value<double>()->default_value(0), "sigma of pitch rotation angle (degree)")
-		("roll_sigma", value<double>()->default_value(0), "sigma of roll rotation angle (degree)")
-		("blur_max_sigma", value<double>()->default_value(0), "maximum value of sigma for gaussian blur (pixel)")
-		("noise_max_sigma", value<double>()->default_value(0), "maximum value of sigma for gaussian noise (pixel value)")
-		("x_slide_sigma", value<double>()->default_value(0), "sigma of slide in x direction (ratio of width)")
-		("y_slide_sigma", value<double>()->default_value(0), "sigma of slide in y direction (ratio of height)")
-		("aspect_ratio_sigma", value<double>()->default_value(0), "sigma of aspect ratio deformation")
-		("horizontal_flip", value<double>()->default_value(0), "probability to flip image from left to right (from 0 to 1)")
-		("vertical_flip", value<double>()->default_value(0), "probability to flip image from up to down (from 0 to 1)");
-
-	variables_map argmap;
-	try{
-		std::ifstream ifs(conf_file);
-		if (!ifs.is_open()){
-			std::string err_msg = "Fail to open config file \"" + conf_file + "\".";
-			throw std::exception(err_msg.c_str());
-		}
-
-		// コマンド引数の取得
-		store(parse_config_file(ifs, opt), argmap);
-		notify(argmap);
-
-		num_generate = argmap["generate_num"].as<int>();
-		yaw_sigma = argmap["yaw_sigma"].as<double>();
-		pitch_sigma = argmap["pitch_sigma"].as<double>();
-		roll_sigma = argmap["roll_sigma"].as<double>();
-		blur_max_sigma = argmap["blur_max_sigma"].as<double>(); 
-		noise_max_sigma = argmap["noise_max_sigma"].as<double>();
-		x_slide_sigma = argmap["x_slide_sigma"].as<double>(); 
-		y_slide_sigma = argmap["y_slide_sigma"].as<double>();
-		aspect_sigma = argmap["aspect_ratio_sigma"].as<double>();
-		hflip_ratio = argmap["horizontal_flip"].as<double>();
-		vflip_ratio = argmap["vertical_flip"].as<double>();
-
-		if (num_generate < 0 || yaw_sigma < 0 || pitch_sigma < 0 || roll_sigma < 0 ||
-			blur_max_sigma < 0 || noise_max_sigma < 0 ||
-			x_slide_sigma < 0 || y_slide_sigma < 0 || aspect_sigma < 0){
-			throw std::exception("All value must NOT be negative.");
-		}
-		if (hflip_ratio < 0 || hflip_ratio > 1) {
-			throw std::exception("\"horizontal_flip\" must be between 0 and 1");
-		}
-		if (vflip_ratio < 0 || vflip_ratio > 1) {
-			throw std::exception("\"vertical_flip\" must be between 0 and 1");
-		}
-
-		return true;
-	}
-	catch (std::exception& e)
-	{
-		std::cout << std::endl << e.what() << std::endl;
+	std::ifstream ifs(conf_file);
+	if (!ifs.is_open()) {
+		std::cout << "Fail to open config file \"" << conf_file << "\"." << std::endl;
 		return false;
 	}
 
+	// デフォルト値
+	num_generate = 1;
+	yaw_sigma = pitch_sigma = roll_sigma = 0;
+	blur_max_sigma = noise_max_sigma = 0;
+	x_slide_sigma = y_slide_sigma = aspect_sigma = 0;
+	hflip_ratio = vflip_ratio = 0;
+
+	std::string line;
+	while (std::getline(ifs, line)) {
+		std::istringstream iss(line);
+		std::string key, eq, value;
+		if (!(iss >> key >> eq >> value)) continue;
+		if (eq != "=") continue;
+		if (key == "generate_num") num_generate = std::stoi(value);				// number to generate per an input image
+		else if (key == "yaw_sigma") yaw_sigma = std::stod(value);				// sigma of yaw rotation angle (degree)
+		else if (key == "pitch_sigma") pitch_sigma = std::stod(value);			// sigma of pitch rotation angle (degree)
+		else if (key == "roll_sigma") roll_sigma = std::stod(value);			// sigma of roll rotation angle (degree)
+		else if (key == "blur_max_sigma") blur_max_sigma = std::stod(value);	// maximum value of sigma for gaussian blur (pixel)
+		else if (key == "noise_max_sigma") noise_max_sigma = std::stod(value);	// maximum value of sigma for gaussian noise (pixel value)
+		else if (key == "x_slide_sigma") x_slide_sigma = std::stod(value);		// sigma of slide in x direction (ratio of width)
+		else if (key == "y_slide_sigma") y_slide_sigma = std::stod(value);		// sigma of slide in y direction (ratio of height)
+		else if (key == "aspect_ratio_sigma") aspect_sigma = std::stod(value);	// sigma of aspect ratio deformation
+		else if (key == "horizontal_flip") hflip_ratio = std::stod(value);		// probability to flip image from left to right (from 0 to 1)
+		else if (key == "vertical_flip") vflip_ratio = std::stod(value);		// probability to flip image from up to down (from 0 to 1)
+		else {
+			std::cout << "Unknown key \"" << key << "\" in config file." << std::endl;
+			return false;
+		}
+	}
+
+	// 簡易チェック
+	if (num_generate < 0 || yaw_sigma < 0 || pitch_sigma < 0 || roll_sigma < 0 ||
+		blur_max_sigma < 0 || noise_max_sigma < 0 ||
+		x_slide_sigma < 0 || y_slide_sigma < 0 || aspect_sigma < 0) {
+		std::cout << "All value must NOT be negative." << std::endl;
+		return false;
+	}
+	if (hflip_ratio < 0 || hflip_ratio > 1) {
+		std::cout << "\"horizontal_flip\" must be between 0 and 1" << std::endl;
+		return false;
+	}
+	if (vflip_ratio < 0 || vflip_ratio > 1) {
+		std::cout << "\"vertical_flip\" must be between 0 and 1" << std::endl;
+		return false;
+	}
 	return true;
 }
 
 
 void GetImageFileNames(const std::string& input_name, std::vector<std::string>& img_files, std::vector<std::vector<cv::Rect>>& positions)
 {
-	using namespace boost::filesystem;
+	using namespace std::filesystem;
 
 	// if input_name is directory
 	if (is_directory(path(input_name))){

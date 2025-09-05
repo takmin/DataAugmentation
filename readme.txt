@@ -1,5 +1,5 @@
-DataAugmentation ver1.0
-2018/10/18 takuya minagawa
+DataAugmentation ver1.2
+2025/09/05 takuya minagawa
 
 1. Introduction
 This program transform input images with rotation, slide, blur, and noise to create training data of image recognition.
@@ -19,18 +19,11 @@ The coordinate system is that X axis is horizontal, Y axis is vertical, and Z ax
 
 
 2. Install
-You need boost and OpenCV for build.
-
-boost
-http://www.boost.org/
+To build, C++17 or higher, OpenCV3 or higher, and CMake3.5 or higher are required.
 
 OpenCV
 http://opencv.org/
 
-You can use pre-compiled version of windows. Extract DataAugmentation.zip and start "exe" file.
-If it does not work, you may need to install VC++2017 runtime.
-You can download it at:
-https://go.microsoft.com/fwlink/?LinkId=746572
 
 
 3. How to use
@@ -109,7 +102,7 @@ Flip image from up to down, which happens at the probability indicated here [0-1
 This software is released under "MIT License".
 http://opensource.org/licenses/MIT
 
-Notice: The libraries used in this software (OpenCV and Boost) are followed under the license of each.
+Notice: The libraries used in this software (OpenCV) are followed under it's license.
 
 
 Takuya MINAGAWA (z.takmin@gmail.com)
