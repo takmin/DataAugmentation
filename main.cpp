@@ -127,7 +127,7 @@ bool LoadConf(const std::string& conf_file, int& num_generate,
 			throw std::exception(err_msg.c_str());
 		}
 
-		// ƒRƒ}ƒ“ƒhˆø”‚Ìæ“¾
+		// ã‚³ãƒãƒ³ãƒ‰å¼•æ•°ã®å–å¾—
 		store(parse_config_file(ifs, opt), argmap);
 		notify(argmap);
 

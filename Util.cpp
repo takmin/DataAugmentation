@@ -38,7 +38,7 @@
 
 namespace util{
 	
-	//! ‚Í‚İo‚é—Ìˆæ‚ğƒJƒbƒg
+	//! ã¯ã¿å‡ºã‚‹é ˜åŸŸã‚’ã‚«ãƒƒãƒˆ
 	cv::Rect TruncateRect(const cv::Rect& obj_rect, const cv::Size& img_size)
 	{
 		cv::Rect resize_rect = obj_rect;
@@ -61,7 +61,7 @@ namespace util{
 	}
 
 
-	//! ’†S‚ğ“®‚©‚³‚¸‚ÉA‚Í‚İo‚é—Ìˆæ‚ğƒJƒbƒg
+	//! ä¸­å¿ƒã‚’å‹•ã‹ã•ãšã«ã€ã¯ã¿å‡ºã‚‹é ˜åŸŸã‚’ã‚«ãƒƒãƒˆ
 	cv::Rect TruncateRectKeepCenter(const cv::Rect& obj_rect, const cv::Size& max_size)
 	{
 		cv::Rect exp_rect = obj_rect;
@@ -85,14 +85,14 @@ namespace util{
 	}
 
 
-	//! ƒAƒmƒe[ƒVƒ‡ƒ“ƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ
+	//! ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿
 	/*!
-	opencv_createsamles.exe‚Æ“¯Œ`®‚ÌƒAƒmƒe[ƒVƒ‡ƒ“ƒtƒ@ƒCƒ‹“Ç‚İ‘‚«
-	ReadCsvFile()ŠÖ”•K{
-	\param[in] gt_file ƒAƒmƒe[ƒVƒ‡ƒ“ƒtƒ@ƒCƒ‹–¼
-	\param[out] imgpathlist ‰æ‘œƒtƒ@ƒCƒ‹‚Ö‚ÌƒpƒX
-	\param[out] rectlist Še‰æ‘œ‚É‚Â‚¯‚ç‚ê‚½ƒAƒmƒe[ƒVƒ‡ƒ“‚ÌƒŠƒXƒg
-	\return “Ç‚İ‚İ‚Ì¬”Û
+	opencv_createsamles.exeã¨åŒå½¢å¼ã®ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿æ›¸ã
+	ReadCsvFile()é–¢æ•°å¿…é ˆ
+	\param[in] gt_file ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«å
+	\param[out] imgpathlist ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ã¸ã®ãƒ‘ã‚¹
+	\param[out] rectlist å„ç”»åƒã«ã¤ã‘ã‚‰ã‚ŒãŸã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒªã‚¹ãƒˆ
+	\return èª­ã¿è¾¼ã¿ã®æˆå¦
 	*/
 	bool LoadAnnotationFile(const std::string& gt_file, std::vector<std::string>& imgpathlist, std::vector<std::vector<cv::Rect>>& rectlist)
 	{
@@ -132,17 +132,17 @@ namespace util{
 	}
 
 
-	//! ƒAƒmƒe[ƒVƒ‡ƒ“ƒtƒ@ƒCƒ‹‚Ö’Ç‹L
+	//! ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«ã¸è¿½è¨˜
 	/*!
-	opencv_createsamles.exe‚Æ“¯Œ`®‚ÌƒAƒmƒe[ƒVƒ‡ƒ“ƒtƒ@ƒCƒ‹“Ç‚İ‘‚«
-	\param[in] anno_file ƒAƒmƒe[ƒVƒ‡ƒ“ƒtƒ@ƒCƒ‹–¼
-	\param[in] img_file ‰æ‘œƒtƒ@ƒCƒ‹‚Ö‚ÌƒpƒX
-	\param[int] obj_rects Še‰æ‘œ‚É‚Â‚¯‚ç‚ê‚½ƒAƒmƒe[ƒVƒ‡ƒ“‚ÌƒŠƒXƒg
-	\return •Û‘¶‚Ì¬”Û
+	opencv_createsamles.exeã¨åŒå½¢å¼ã®ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«èª­ã¿æ›¸ã
+	\param[in] anno_file ã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ãƒ•ã‚¡ã‚¤ãƒ«å
+	\param[in] img_file ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ã¸ã®ãƒ‘ã‚¹
+	\param[int] obj_rects å„ç”»åƒã«ã¤ã‘ã‚‰ã‚ŒãŸã‚¢ãƒãƒ†ãƒ¼ã‚·ãƒ§ãƒ³ã®ãƒªã‚¹ãƒˆ
+	\return ä¿å­˜ã®æˆå¦
 	*/
 	bool AddAnnotationLine(const std::string& anno_file, const std::string& img_file, const std::vector<cv::Rect>& obj_rects, const std::string& sep)
 	{
-		// o—Íƒtƒ@ƒCƒ‹‚ğŠJ‚­
+		// å‡ºåŠ›ãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã
 		std::ofstream ofs(anno_file, std::ios::app);
 		if (!ofs.is_open()){
 			return false;
@@ -158,7 +158,7 @@ namespace util{
 	}
 
 
-	// ƒfƒBƒŒƒNƒgƒŠ‚©‚ç‰æ‘œƒtƒ@ƒCƒ‹–¼ˆê——‚ğæ“¾
+	// ãƒ‡ã‚£ãƒ¬ã‚¯ãƒˆãƒªã‹ã‚‰ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«åä¸€è¦§ã‚’å–å¾—
 	bool ReadImageFilesInDirectory(const std::string& img_dir, std::vector<std::string>& image_lists)
 	{
 		using namespace boost::filesystem;

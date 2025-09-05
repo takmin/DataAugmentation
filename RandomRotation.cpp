@@ -38,15 +38,15 @@
 
 
 
-//!ƒˆ[^ƒsƒbƒ`^ƒ[ƒ‹‚Æ•½sˆÚ“®¬•ª‚©‚çAƒJƒƒ‰ŠO•”s—ñi‰ñ“]{•Àij‚ğ‹‚ß‚é
+//!ãƒ¨ãƒ¼ï¼ãƒ”ãƒƒãƒï¼ãƒ­ãƒ¼ãƒ«ã¨å¹³è¡Œç§»å‹•æˆåˆ†ã‹ã‚‰ã€ã‚«ãƒ¡ãƒ©å¤–éƒ¨è¡Œåˆ—ï¼ˆå›è»¢ï¼‹ä¸¦é€²ï¼‰ã‚’æ±‚ã‚ã‚‹
 /*!
-\param[in] yaw ƒˆ[
-\param[in] pitch ƒsƒbƒ`
-\param[in] roll ƒ[ƒ‹
-\param[in] trans_x •ÀiˆÚ“®X¬•ª
-\param[in] trans_y •ÀiˆÚ“®Y¬•ª
-\param[in] trans_z •ÀiˆÚ“®Z¬•ª
-\param[out] external_matrix ŠO•”s—ñ
+\param[in] yaw ãƒ¨ãƒ¼
+\param[in] pitch ãƒ”ãƒƒãƒ
+\param[in] roll ãƒ­ãƒ¼ãƒ«
+\param[in] trans_x ä¸¦é€²ç§»å‹•Xæˆåˆ†
+\param[in] trans_y ä¸¦é€²ç§»å‹•Yæˆåˆ†
+\param[in] trans_z ä¸¦é€²ç§»å‹•Zæˆåˆ†
+\param[out] external_matrix å¤–éƒ¨è¡Œåˆ—
 */
 void composeExternalMatrix(float yaw, float pitch, float roll, float trans_x, float trans_y, float trans_z, cv::Mat& external_matrix)
 {
@@ -76,10 +76,10 @@ void composeExternalMatrix(float yaw, float pitch, float roll, float trans_x, fl
 }
 
 
-//! ‹éŒ`‚Ìl‹÷‚ÌÀ•W‚ğ‚»‚ê‚¼‚êÄŸÀ•WŒn‚Ö•ÏŠ·
+//! çŸ©å½¢ã®å››éš…ã®åº§æ¨™ã‚’ãã‚Œãã‚Œæ–‰æ¬¡åº§æ¨™ç³»ã¸å¤‰æ›
 cv::Mat Rect2Mat(const cv::Rect& img_rect)
 {
-	// ‰æ‘œƒvƒŒ[ƒg‚Ìl‹÷‚ÌÀ•W
+	// ç”»åƒãƒ—ãƒ¬ãƒ¼ãƒˆã®å››éš…ã®åº§æ¨™
 	cv::Mat srcCoord(3, 4, CV_64FC1);
 	srcCoord.at<double>(0, 0) = img_rect.x;
 	srcCoord.at<double>(1, 0) = img_rect.y;
@@ -98,18 +98,18 @@ cv::Mat Rect2Mat(const cv::Rect& img_rect)
 }
 
 
-//! “ü—Í‰æ‘œ‚Ìl‹÷‚ğtransM‚É‰ˆ‚Á‚Ä“§‹•ÏŠ·‚µAo—Í‰æ‘œ‚ÌŠOÚ’·•ûŒ`‚ğ‹‚ß‚é
+//! å…¥åŠ›ç”»åƒã®å››éš…ã‚’transMã«æ²¿ã£ã¦é€è¦–å¤‰æ›ã—ã€å‡ºåŠ›ç”»åƒã®å¤–æ¥é•·æ–¹å½¢ã‚’æ±‚ã‚ã‚‹
 /*!
-\param[in] img_size “ü—Í‰æ‘œƒTƒCƒY
-\param[in] transM 3x3‚Ì“§‹•ÏŠ·s—ñ(CV_64FC1)
-\param[out] CircumRect o—Í‰æ‘œ‚ÌŠOÚ’·•ûŒ`
+\param[in] img_size å…¥åŠ›ç”»åƒã‚µã‚¤ã‚º
+\param[in] transM 3x3ã®é€è¦–å¤‰æ›è¡Œåˆ—(CV_64FC1)
+\param[out] CircumRect å‡ºåŠ›ç”»åƒã®å¤–æ¥é•·æ–¹å½¢
 */
 void CircumTransImgRect(const cv::Size& img_size, const cv::Mat& transM, cv::Rect_<double>& CircumRect)
 {
-	// “ü—Í‰æ‘œ‚Ìl‹÷‚ğÄŸÀ•W‚Ö•ÏŠ·
+	// å…¥åŠ›ç”»åƒã®å››éš…ã‚’æ–‰æ¬¡åº§æ¨™ã¸å¤‰æ›
 	cv::Mat cornersMat = Rect2Mat(cv::Rect(0, 0, img_size.width, img_size.height));
 
-	// À•W•ÏŠ·‚µA”ÍˆÍ‚ğæ“¾
+	// åº§æ¨™å¤‰æ›ã—ã€ç¯„å›²ã‚’å–å¾—
 	cv::Mat dstCoord = transM * cornersMat;
 	double min_x = std::min(dstCoord.at<double>(0, 0) / dstCoord.at<double>(2, 0), dstCoord.at<double>(0, 3) / dstCoord.at<double>(2, 3));
 	double max_x = std::max(dstCoord.at<double>(0, 1) / dstCoord.at<double>(2, 1), dstCoord.at<double>(0, 2) / dstCoord.at<double>(2, 2));
@@ -124,22 +124,22 @@ void CircumTransImgRect(const cv::Size& img_size, const cv::Mat& transM, cv::Rec
 
 
 
-//! “ü—Í‰æ‘œ‚Æo—Í‰æ‘œ‚ÌÀ•W‚Ì‘Î‰ŠÖŒW‚ğŒvZ
+//! å…¥åŠ›ç”»åƒã¨å‡ºåŠ›ç”»åƒã®åº§æ¨™ã®å¯¾å¿œé–¢ä¿‚ã‚’è¨ˆç®—
 /*!
-\param[in] src_size “ü—Í‰æ‘œƒTƒCƒY
-\param[in] dst_rect “ü—Í‰æ‘œ‚ğ“§‹•ÏŠ·‚µ‚½‚Ìo—Í‰æ‘œ‚ÌŠOÚ’·•ûŒ`
-\param[in] transMat 4x4‚Ì‰ñ“]/•½sˆÚ“®s—ñ(CV_64FC1)BŒ´“_‚Å‰ñ“]‚³‚¹‚ÄAZ²•ûŒü‚É•½sˆÚ“®‚µ‚½‚à‚Ì
-\param[out] map_x o—Í‰æ‘œ‚ÌŠeÀ•W‚É‘Î‚·‚é“ü—Í‰æ‘œ‚ÌxÀ•W
-\param[out] map_y o—Í‰æ‘œ‚ÌŠeÀ•W‚É‘Î‚·‚é“ü—Í‰æ‘œ‚ÌyÀ•W
+\param[in] src_size å…¥åŠ›ç”»åƒã‚µã‚¤ã‚º
+\param[in] dst_rect å…¥åŠ›ç”»åƒã‚’é€è¦–å¤‰æ›ã—ãŸæ™‚ã®å‡ºåŠ›ç”»åƒã®å¤–æ¥é•·æ–¹å½¢
+\param[in] transMat 4x4ã®å›è»¢/å¹³è¡Œç§»å‹•è¡Œåˆ—(CV_64FC1)ã€‚åŸç‚¹ã§å›è»¢ã•ã›ã¦ã€Zè»¸æ–¹å‘ã«å¹³è¡Œç§»å‹•ã—ãŸã‚‚ã®
+\param[out] map_x å‡ºåŠ›ç”»åƒã®å„åº§æ¨™ã«å¯¾ã™ã‚‹å…¥åŠ›ç”»åƒã®xåº§æ¨™
+\param[out] map_y å‡ºåŠ›ç”»åƒã®å„åº§æ¨™ã«å¯¾ã™ã‚‹å…¥åŠ›ç”»åƒã®yåº§æ¨™
 
-transMat‚Í“ü—Í‰æ‘œ‚ğ‚RŸŒ³“I‚É‰ñ“]‚µA‚»‚Ì’†S‚ğ(0,0,Z)‚É’u‚­‚æ‚¤‚É•ÏŠ·‚·‚és—ñB
-o—Í‰æ‘œ‚ÍÅ“_‹——£‚ª1‚ÌƒJƒƒ‰‚ğ‘z’è‚µA“ü—Í‰æ‘œ‚ğ‚±‚±‚É“§‹•ÏŠ·‚·‚éB
-‚½‚¾‚µAƒXƒP[ƒ‹‚ğ‡‚í‚¹‚é‚½‚ß‚Éo—Í‰æ‘œ‚ÌX,YÀ•W‚ğ1/Z‚·‚éB
-o—Í‰æ‘œã‚ÌÀ•W‚ª(dx, dy)‚Å—^‚¦‚ç‚ê‚½AŒ´“_‚Æ‚»‚Ì“_‚ğŒ‹‚Ô’¼ü‚Í(dx*r, dy*r, Z*r)‚Å•\‚³‚ê‚éB
-“ü—Í‰æ‘œã‚ÌÀ•W(sx,sy)‚ğ‚RŸŒ³À•W‚Å•\‚·‚ÆtransMat*(sx, sy, 0, 1)^T ‚Æ‚È‚é‚Ì‚ÅA(sx, sy)‚Æ(dx, dy)‚ÌŠÖŒW‚Í
+transMatã¯å…¥åŠ›ç”»åƒã‚’ï¼“æ¬¡å…ƒçš„ã«å›è»¢ã—ã€ãã®ä¸­å¿ƒã‚’(0,0,Z)ã«ç½®ãã‚ˆã†ã«å¤‰æ›ã™ã‚‹è¡Œåˆ—ã€‚
+å‡ºåŠ›ç”»åƒã¯ç„¦ç‚¹è·é›¢ãŒ1ã®ã‚«ãƒ¡ãƒ©ã‚’æƒ³å®šã—ã€å…¥åŠ›ç”»åƒã‚’ã“ã“ã«é€è¦–å¤‰æ›ã™ã‚‹ã€‚
+ãŸã ã—ã€ã‚¹ã‚±ãƒ¼ãƒ«ã‚’åˆã‚ã›ã‚‹ãŸã‚ã«å‡ºåŠ›ç”»åƒã®X,Yåº§æ¨™ã‚’1/Zã™ã‚‹ã€‚
+å‡ºåŠ›ç”»åƒä¸Šã®åº§æ¨™ãŒ(dx, dy)ã§ä¸ãˆã‚‰ã‚ŒãŸæ™‚ã€åŸç‚¹ã¨ãã®ç‚¹ã‚’çµã¶ç›´ç·šã¯(dx*r, dy*r, Z*r)ã§è¡¨ã•ã‚Œã‚‹ã€‚
+å…¥åŠ›ç”»åƒä¸Šã®åº§æ¨™(sx,sy)ã‚’ï¼“æ¬¡å…ƒåº§æ¨™ã§è¡¨ã™ã¨transMat*(sx, sy, 0, 1)^T ã¨ãªã‚‹ã®ã§ã€(sx, sy)ã¨(dx, dy)ã®é–¢ä¿‚ã¯
 (sx, sy, 0, 1)^T = transMat^(-1) * (dx*r, dy*r, Z*r)
-‚Æ‚È‚éB
-‚±‚±‚©‚çAr‚ğÁ‚·‚±‚Æ‚Ådx‚Ædy‚É‘Î‰‚·‚ésx‚Æsy‚ª‹‚Ü‚éB
+ã¨ãªã‚‹ã€‚
+ã“ã“ã‹ã‚‰ã€rã‚’æ¶ˆã™ã“ã¨ã§dxã¨dyã«å¯¾å¿œã™ã‚‹sxã¨syãŒæ±‚ã¾ã‚‹ã€‚
 */
 void CreateMap(const cv::Size& src_size, const cv::Rect_<double>& dst_rect, const cv::Mat& transMat, cv::Mat& map_x, cv::Mat& map_y)
 {
@@ -148,8 +148,8 @@ void CreateMap(const cv::Size& src_size, const cv::Rect_<double>& dst_rect, cons
 
 	double Z = transMat.at<double>(2, 3);
 
-	cv::Mat invTransMat = transMat.inv();	// ‹ts—ñ
-	cv::Mat dst_pos(3, 1, CV_64FC1);	// o—Í‰æ‘œã‚ÌÀ•W
+	cv::Mat invTransMat = transMat.inv();	// é€†è¡Œåˆ—
+	cv::Mat dst_pos(3, 1, CV_64FC1);	// å‡ºåŠ›ç”»åƒä¸Šã®åº§æ¨™
 	dst_pos.at<double>(2, 0) = Z;
 	for (int dy = 0; dy<map_x.rows; dy++){
 		dst_pos.at<double>(1, 0) = dst_rect.y + dy;
@@ -183,18 +183,18 @@ void RotateImage(const cv::Mat& src, cv::Mat& dst, float yaw, float pitch, float
 	invPerspMat.at<double>(0, 2) = -(double)src.cols / 2;
 	invPerspMat.at<double>(1, 2) = -(double)src.rows / 2;
 
-	// ‚RŸŒ³À•W‚©‚ç‚QŸŒ³À•W‚Ö“§‹•ÏŠ·
+	// ï¼“æ¬¡å…ƒåº§æ¨™ã‹ã‚‰ï¼’æ¬¡å…ƒåº§æ¨™ã¸é€è¦–å¤‰æ›
 	cv::Mat perspMat = cv::Mat::zeros(3, 4, CV_64FC1);
 	perspMat.at<double>(0, 0) = Z;
 	perspMat.at<double>(1, 1) = Z;
 	perspMat.at<double>(2, 2) = 1;
 
-	// À•W•ÏŠ·‚µAo—Í‰æ‘œ‚ÌÀ•W”ÍˆÍ‚ğæ“¾
+	// åº§æ¨™å¤‰æ›ã—ã€å‡ºåŠ›ç”»åƒã®åº§æ¨™ç¯„å›²ã‚’å–å¾—
 	cv::Mat transMat = perspMat * rotMat * invPerspMat;
 	cv::Rect_<double> CircumRect;
 	CircumTransImgRect(src.size(), transMat, CircumRect);
 
-	// o—Í‰æ‘œ‚Æ“ü—Í‰æ‘œ‚Ì‘Î‰ƒ}ƒbƒv‚ğì¬
+	// å‡ºåŠ›ç”»åƒã¨å…¥åŠ›ç”»åƒã®å¯¾å¿œãƒãƒƒãƒ—ã‚’ä½œæˆ
 	cv::Mat map_x, map_y;
 	CreateMap(src.size(), CircumRect, rotMat, map_x, map_y);
 	cv::remap(src, dst, map_x, map_y, interpolation, boarder_mode, border_color);
